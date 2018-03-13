@@ -4,3 +4,8 @@
 # SSH
 ssh pi@<IP>
 ssh -Y pi@<IP>
+
+# Install and start chrom
+sudo apt-get install chromium-browser
+sudo apt-get update
+chromium-browser

@@ -1,5 +1,7 @@
 # Install git
-<sudo apt-get install git>
+sudo apt-get install git
+git init  # New repository
+
 
 # SSH
 ssh pi@<IP>
@@ -9,3 +11,6 @@ ssh -Y pi@<IP>
 sudo apt-get install chromium-browser
 sudo apt-get update
 chromium-browser
+
+# Open file in chrome
+chromium-browser test.html

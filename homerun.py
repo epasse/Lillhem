@@ -10,30 +10,36 @@ else:
     BROWSER = 'chromium-browser'  # RPi        
     BROWSER_KILL = 'chromium'
 
-def start_chrome(debug):
+def start_chrome(html_path, debug):
     print("Starting chrome")
-    html_path = abspath(join(dirname(__file__), './html/test.html'))
     cmd = [BROWSER, html_path, '--noerrdialogs', '--incognito', '--disable-translate'] # '--ignore-certificate-errors'
     if not debug:
         cmd.append('--kiosk')
     subprocess.Popen(cmd)
 
 def turn_off_chrome():
-    print("Turns of chrome")
     cmd = ['pkill', BROWSER_KILL]
     subprocess.call(cmd)
-    print("Done")
-	
+    print("Turned of chrome")
+
+def job(html, debug):
+    start_chrome(html, debug)
+    time.sleep(10)
+    turn_off_chrome()
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--debugOff', action="store_false")
     args = parser.parse_args()
-    
     if args.debugOff:
         print("Starting in debug mode")
-    start_chrome(args.debugOff)
-    time.sleep(25)
-    turn_off_chrome()
+    
+    html = abspath(join(dirname(__file__), './html/train_yr.html'))
+    schedule.every(30).seconds.do(job, html, args.debugOff)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 	
 
 #* Create a script to replace the standard desktop environment.

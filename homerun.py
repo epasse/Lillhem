@@ -1,8 +1,6 @@
 #/usr/bin/env python
-import subprocess, time, os
+import subprocess, time, os, argparse, schedule
 from os.path import abspath, dirname, join
-
-DEBUG = True
 
 if 'x86_64' in os.uname():
     BROWSER = 'google-chrome'
@@ -12,11 +10,11 @@ else:
     BROWSER = 'chromium-browser'  # RPi        
     BROWSER_KILL = 'chromium'
 
-def start_chrome():
+def start_chrome(debug):
     print("Starting chrome")
     html_path = abspath(join(dirname(__file__), './html/test.html'))
     cmd = [BROWSER, html_path, '--noerrdialogs', '--incognito', '--disable-translate'] # '--ignore-certificate-errors'
-    if not DEBUG:
+    if not debug:
         cmd.append('--kiosk')
     subprocess.Popen(cmd)
 
@@ -27,8 +25,13 @@ def turn_off_chrome():
     print("Done")
 	
 if __name__ == "__main__":
-    print("Starting")
-    start_chrome()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--debugOff', action="store_false")
+    args = parser.parse_args()
+    
+    if args.debugOff:
+        print("Starting in debug mode")
+    start_chrome(args.debugOff)
     time.sleep(25)
     turn_off_chrome()
 	

@@ -2,6 +2,8 @@
 import subprocess, time, os
 from os.path import abspath, dirname, join
 
+DEBUG = True
+
 if 'x86_64' in os.uname():
     BROWSER = 'google-chrome'
     BROWSER_KILL = 'chrome'
@@ -12,7 +14,9 @@ else:
 def start_chrome():
     print("Starting chrome")
     html_path = abspath(join(dirname(__file__), './html/test.html'))
-    cmd = [BROWSER, html_path, '--noerrdialogs', '--kiosk', '--incognito', '--disable-translate'] # '--ignore-certificate-errors'
+    cmd = [BROWSER, html_path, '--noerrdialogs', '--incognito', '--disable-translate'] # '--ignore-certificate-errors'
+    if not DEBUG:
+        cmd.append('--kiosk')
     subprocess.Popen(cmd)
 
 def turn_off_chrome():

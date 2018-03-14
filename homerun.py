@@ -7,7 +7,8 @@ DEBUG = True
 if 'x86_64' in os.uname():
     BROWSER = 'google-chrome'
     BROWSER_KILL = 'chrome'
-else: 
+else:
+    print("Running on RPi")
     BROWSER = 'chromium-browser'  # RPi        
     BROWSER_KILL = 'chromium'
 

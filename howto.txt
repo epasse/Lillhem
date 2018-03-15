@@ -14,3 +14,7 @@ chromium-browser
 
 # Open file in chrome
 chromium-browser test.html
+
+# Start script at boot 
+https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/
+

@@ -2,6 +2,8 @@
 import subprocess, time, os, sys, argparse, schedule
 from os.path import abspath, dirname, join
 
+from threading import Thread
+
 if sys.version_info >= (3, 0): # python 3
     import tkinter as Tkinter
     from tkinter import messagebox
@@ -34,21 +36,36 @@ def job(html, debug):
     time.sleep(10)
     turn_off_chrome()
 
-def halt_startup():
+def halt_startup(exit_app):
     root = Tkinter.Tk()
     root.withdraw()
-    result = messagebox.askyesno(__file__,"The application is about to start, would you like to stop it?")
-    if result:
-        print("Application halted by user")
-        exit()
+    exit_app[0] = messagebox.askyesno(__file__,"The application is about to start, would you like to stop it?")
     root.destroy()
+
+def start_up_delay():
+    exit_app = [False]*1 # Use list to "return by reference"
+    tread = Thread(target=halt_startup, args=(exit_app,))
+    tread.start()
+    start = time.time()
+    timeout = False
+    while not exit_app[0] and tread.isAlive() and not timeout:
+        timeout = (time.time() - start) > 5
+        time.sleep(1)
+        print(time.time())
+
+    if exit_app[0]:
+        exit("Application halted by user..")
+    elif timeout:
+        exit_app[0] = True
+        print("Time out")
+    tread.exit()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--debugOff', action="store_false")
     args = parser.parse_args()
 
-    halt_startup()
+    start_up_delay()
 
     if args.debugOff:
         print("Starting in debug mode")

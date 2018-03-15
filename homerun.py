@@ -74,7 +74,8 @@ if __name__ == "__main__":
     
     html = abspath(join(dirname(__file__), './html/train_yr.html'))
 #    schedule.every().day.at("21:01").do(start_chrome, html, args.debugOff)
-    schedule.every(60).seconds.do(job, html, args.debugOff)
+    #schedule.every(60).seconds.do(job, html, args.debugOff)
+    start_chrome(html, args.debugOff)
 
     while True:
         schedule.run_pending()

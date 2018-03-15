@@ -1,6 +1,13 @@
 #/usr/bin/env python
-import subprocess, time, os, argparse, schedule
+import subprocess, time, os, sys, argparse, schedule
 from os.path import abspath, dirname, join
+
+if sys.version_info >= (3, 0): # python 3
+    import tkinter as Tkinter
+    from tkinter import messagebox
+else:
+    import Tkinter
+    import tkMessageBox as messagebox
 
 if 'x86_64' in os.uname():
     BROWSER = 'google-chrome'
@@ -27,10 +34,22 @@ def job(html, debug):
     time.sleep(10)
     turn_off_chrome()
 
+def halt_startup():
+    root = Tkinter.Tk()
+    root.withdraw()
+    result = messagebox.askyesno(__file__,"The application is about to start, would you like to stop it?")
+    if result:
+        print("Application halted by user")
+        exit()
+    root.destroy()
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--debugOff', action="store_false")
     args = parser.parse_args()
+
+    halt_startup()
+
     if args.debugOff:
         print("Starting in debug mode")
     

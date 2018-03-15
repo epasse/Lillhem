@@ -4,12 +4,14 @@ from os.path import abspath, dirname, join
 
 from threading import Thread
 
+import multiprocessing
+
 if sys.version_info >= (3, 0): # python 3
     import tkinter as Tkinter
-    from tkinter import messagebox
+    from tkinter import messagebox as mb
 else:
     import Tkinter
-    import tkMessageBox as messagebox
+    import tkMessageBox as mb
 
 if 'x86_64' in os.uname():
     BROWSER = 'google-chrome'
@@ -39,33 +41,33 @@ def job(html, debug):
 def halt_startup(exit_app):
     root = Tkinter.Tk()
     root.withdraw()
-    exit_app[0] = messagebox.askyesno(__file__,"The application is about to start, would you like to stop it?")
+    exit_app[0] = mb.askyesno(__file__,"The application is about to start, would you like to stop it?")
     root.destroy()
 
-def start_up_delay():
-    exit_app = [False]*1 # Use list to "return by reference"
-    tread = Thread(target=halt_startup, args=(exit_app,))
+def start_up_delay(sec=60):
+    manager = multiprocessing.Manager()
+    exit_app = manager.list()
+    exit_app.append(False) # "Retrun by reference"
+    tread = multiprocessing.Process(target=halt_startup, args=(exit_app,))
     tread.start()
     start = time.time()
     timeout = False
-    while not exit_app[0] and tread.isAlive() and not timeout:
-        timeout = (time.time() - start) > 5
-        time.sleep(1)
-        print(time.time())
+    while not exit_app[0] and tread.is_alive() and not timeout:
+        timeout = (time.time() - start) > sec
+    tread.terminate()
 
     if exit_app[0]:
         exit("Application halted by user..")
     elif timeout:
-        exit_app[0] = True
         print("Time out")
-    tread.exit()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--debugOff', action="store_false")
     args = parser.parse_args()
 
-    start_up_delay()
+    start_up_delay(20)
 
     if args.debugOff:
         print("Starting in debug mode")

@@ -21,3 +21,8 @@ https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-sta
 # Install tkinter
 sudo apt-get install python-tk
 
+# Autorun 
+In:
+sudo nano /home/pi/.profile
+Set the cmd
+
